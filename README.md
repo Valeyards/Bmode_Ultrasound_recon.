@@ -1,2 +1,2 @@
-# Medical_Image_Process_course_design
+# B mode ultrasound reconstruction
 ultrasound reconstruction(based on RF signal)
