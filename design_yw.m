@@ -13,99 +13,99 @@ img=f;
 % figure,imagesc(abs(f)),colormap('gray');colorbar;
 % %[num_lines,mgraph]=size(f);
 
-%% ²ÎÊıÉèÖÃ
+%% å‚æ•°è®¾ç½®
 [lines,points]=size(img);
-depth=3;%Éî¶È
-r=0.4; %Æµ´ø´ø¿í±ÈÀı
-alpha=0.2; %Ë¥¼õÏµÊı
-width=3.81;%¿í¶È
-c=1.54*10^5;%ËÙ¶È
-d=(0:points-1).*depth/points;%Ã¿¸öµãÉî¶È
-fs=points*c/2/depth; %²ÉÑùÆµÂÊ41.53MHz
-fc=10000000;%Ì½Í·ÖĞĞÄÆµÂÊ
+depth=3;%æ·±åº¦
+r=0.4; %é¢‘å¸¦å¸¦å®½æ¯”ä¾‹
+alpha=0.2; %è¡°å‡ç³»æ•°
+width=3.81;%å®½åº¦
+c=1.54*10^5;%é€Ÿåº¦
+d=(0:points-1).*depth/points;%æ¯ä¸ªç‚¹æ·±åº¦
+fs=points*c/2/depth; %é‡‡æ ·é¢‘ç‡41.53MHz
+fc=10000000;%æ¢å¤´ä¸­å¿ƒé¢‘ç‡
 depth_pix=512;
 width_pix=round(depth_pix/depth*width);
 gap=fs/1618;
 time=(0:points-1)/fs;
-freq=0:gap:fs-fs/1618; %Êµ¼ÊÃ¿¸öµãÆµÂÊ
+freq=0:gap:fs-fs/1618; %å®é™…æ¯ä¸ªç‚¹é¢‘ç‡
 for line_no=1:lines
     a_line=img(line_no,:);
     number=66;
-    %% È¥³ıÖ±Á÷
-    %¸ßÍ¨ÂË²¨Æ÷Éè¼Æ
+    %% å»é™¤ç›´æµ
+    %é«˜é€šæ»¤æ³¢å™¨è®¾è®¡
     wp=pi/2;ws=pi/7;
     highpass=wp-ws;
     N0=ceil(6.8*pi/highpass);
     N_highpass=N0+mod(N0+1,2);
-    wc=(wp+ws)/2/pi; %ÖĞĞÄÆµÂÊ
+    wc=(wp+ws)/2/pi; %ä¸­å¿ƒé¢‘ç‡
     highpass_filt=fir1(N_highpass-1,wc,'high',hanning(N_highpass)); %FIR butterworth highpass filter
     a_line_filtered=fftfilt(highpass_filt,a_line);
-    figure(1); %Ô­Ê¼¼°¸ßÍ¨ÂË²¨
-    if(line_no==number) %»­Ò»Ìõ¿´Ò»¿´
+    figure(1); %åŸå§‹åŠé«˜é€šæ»¤æ³¢
+    if(line_no==number) %ç”»ä¸€æ¡çœ‹ä¸€çœ‹
         subplot(221);
-        plot(time,a_line);title('Ô­Ê¼ÉäÆµÊ±Óò');
-        subplot(222);plot(time,a_line_filtered);title('ÂË²¨ºóÊ±Óò');
-        subplot 223;plot(freq,abs(fft(a_line)));title('Ô­Ê¼ÉäÆµÆµÆ×');
-        subplot 224;plot(freq,abs(fft(a_line_filtered)));title('¸ßÍ¨ÂË²¨ºóÆµÆ×');
+        plot(time,a_line);title('åŸå§‹å°„é¢‘æ—¶åŸŸ');
+        subplot(222);plot(time,a_line_filtered);title('æ»¤æ³¢åæ—¶åŸŸ');
+        subplot 223;plot(freq,abs(fft(a_line)));title('åŸå§‹å°„é¢‘é¢‘è°±');
+        subplot 224;plot(freq,abs(fft(a_line_filtered)));title('é«˜é€šæ»¤æ³¢åé¢‘è°±');
     end
     
-    %% Õı½»½âµ÷
+    %% æ­£äº¤è§£è°ƒ
     f_shift=0.11513*(fc*r)^2/(2*log(2))*alpha.*d;
-    f_1=fc-f_shift; %¶¯Ì¬ÆµÂÊ
+    f_1=fc-f_shift; %åŠ¨æ€é¢‘ç‡
     Q=a_line_filtered.*cos(2*pi*f_1.*time);
     I=a_line_filtered.*sin(2*pi*f_1.*time);
     if(line_no==number) 
-        figure(2); %Õı½»½âµ÷
+        figure(2); %æ­£äº¤è§£è°ƒ
         subplot(221);
         plot(Q);%hold on;plot(a_line_filtered);
-        title('½âµ÷ºóµÄQ');
+        title('è§£è°ƒåçš„Q');
         subplot(222);
         plot(I);%hold on;plot(a_line_filtered);
-        title('½âµ÷ºóµÄI');
+        title('è§£è°ƒåçš„I');
         subplot(223);
         plot(abs(fft(Q)));%hold on;plot(freq,abs(fft(a_line_filtered)));
-        title('½âµ÷ºóµÄQ in ÆµÓò');
+        title('è§£è°ƒåçš„Q in é¢‘åŸŸ');
         subplot(224);
         plot(abs(fft(I)));%hold on;plot(freq,abs(fft(a_line_filtered)));
-        title('½âµ÷ºóµÄI in ÆµÓò');
+        title('è§£è°ƒåçš„I in é¢‘åŸŸ');
     end
-    %% ¸ßË¹µÍÍ¨ÂË²¨
+    %% é«˜æ–¯ä½é€šæ»¤æ³¢
     lp_width=0.03;
     dz=depth/points;
     numz=2*round(2*lp_width/dz)+1;
     z2=dz*(-numz/2:(numz/2+1))';
-    sigma=lp_width/4; %±ê×¼²î
+    sigma=lp_width/4; %æ ‡å‡†å·®
     LPF=((2*pi)^.5*sigma)^-1*exp(-.5*(z2/sigma).^2);
     Q_filtered=fftfilt(LPF,Q);
     I_filtered=fftfilt(LPF,I);
     lp_result=sqrt(Q_filtered.^2+I_filtered.^2);
-    %»­Í¼¿´¿´
+    %ç”»å›¾çœ‹çœ‹
     if(line_no==number)
         figure(6);
         subplot 221
-        plot(time,a_line_filtered);title('µÍÍ¨ÂË²¨Ç°µÄÊ±Óò');
+        plot(time,a_line_filtered);title('ä½é€šæ»¤æ³¢å‰çš„æ—¶åŸŸ');
         subplot 222
-        plot(freq,abs(fft(a_line_filtered)));title('µÍÍ¨ÂË²¨Ç°µÄÆµÓò');
+        plot(freq,abs(fft(a_line_filtered)));title('ä½é€šæ»¤æ³¢å‰çš„é¢‘åŸŸ');
         subplot 223
-        plot(time,lp_result);title('µÍÍ¨ÂË²¨ºóµÄÊ±Óò');
+        plot(time,lp_result);title('ä½é€šæ»¤æ³¢åçš„æ—¶åŸŸ');
         subplot 224
-        plot(freq,abs(fft(lp_result)));title('µÍÍ¨ÂË²¨ºóµÄÆµÓò');
+        plot(freq,abs(fft(lp_result)));title('ä½é€šæ»¤æ³¢åçš„é¢‘åŸŸ');
     end
     
-    %% Ê±¼äÔöÒæ²¹³¥
+    %% æ—¶é—´å¢ç›Šè¡¥å¿
     beta=log(10)*alpha*fc/20;
     TGC_Matrix=1-exp(-beta.*d);
     I_TGC=I_filtered.*TGC_Matrix;
     Q_TGC=Q_filtered.*TGC_Matrix;
-    envelop_IQ=sqrt(I_TGC.^2+Q_TGC.^2); %°üÂç
+    envelop_IQ=sqrt(I_TGC.^2+Q_TGC.^2); %åŒ…ç»œ
     if(line_no==number)
-        figure(3); %ÏÂ²ÉÑù
+        figure(3); %ä¸‹é‡‡æ ·
         subplot 221
-        plot(abs(envelop_IQ));title('ÏÂ²ÉÑùÇ°Ê±Óò²¨ĞÎ');
+        plot(abs(envelop_IQ));title('ä¸‹é‡‡æ ·å‰æ—¶åŸŸæ³¢å½¢');
         subplot 222;
-        plot(abs(fft(envelop_IQ)));title('ÏÂ²ÉÑùÇ°ÆµÆ×');
+        plot(abs(fft(envelop_IQ)));title('ä¸‹é‡‡æ ·å‰é¢‘è°±');
     end
-    %% ÏÂ²ÉÑù
+    %% ä¸‹é‡‡æ ·
     per_pix=fix(points/512);
     downsp=zeros(1,512);
     for i=1:512
@@ -113,13 +113,13 @@ for line_no=1:lines
     end
     if(line_no==number)
         subplot 223;
-        plot(abs(downsp));title('ÏÂ²ÉÑùºóÊ±Óò²¨ĞÎ');
+        plot(abs(downsp));title('ä¸‹é‡‡æ ·åæ—¶åŸŸæ³¢å½¢');
         subplot 224;
-        plot(abs(fft(downsp)));title('ÏÂ²ÉÑùºóÆµÆ×');
+        plot(abs(fft(downsp)));title('ä¸‹é‡‡æ ·åé¢‘è°±');
     end
     one_frame(line_no,:)=downsp;
 end
-% % %% ¶ÔÊı±ä»»
+% % %% å¯¹æ•°å˜æ¢
 % D=100;G=0;
 % % for nlog=1:168
 % %     for i=1:512
@@ -130,17 +130,17 @@ end
 % %         logdata(nlog,i)=q;
 % %     end
 % % end
-%% ¶ÔÊı±ä»»new
+%% å¯¹æ•°å˜æ¢new
 D=60;G=0;
 logdata=D*log10(one_frame+1)+G;
 logdata=logdata';
 figure;
 imshow(one_frame',[]);
-title('ÖØ½¨Í¼Ïñ');
+title('é‡å»ºå›¾åƒ');
 figure;
 imshow(logdata,[]);
-title('¶ÔÊı±ä»»ºóµÄÍ¼Ïñ');
-%% ²åÖµÏÔÊ¾
+title('å¯¹æ•°å˜æ¢åçš„å›¾åƒ');
+%% æ’å€¼æ˜¾ç¤º
 for i=1:size(logdata,1)
     for j=1:size(logdata,2)-1
         Interp_Out(i,2*j-1)=logdata(i,j);
@@ -149,7 +149,7 @@ for i=1:size(logdata,1)
 end
 
 figure 
-b=(Interp_Out-min(Interp_Out(:)))./(max(Interp_Out(:))-min(Interp_Out(:)))*255;%%aÎªdoubleĞÍ
+b=(Interp_Out-min(Interp_Out(:)))./(max(Interp_Out(:))-min(Interp_Out(:)))*255;%%aä¸ºdoubleå‹
 b=b-50;
 imshow(uint8(b));   
-title('²åÖµºóµÄÍ¼Ïñ')
+title('æ’å€¼åçš„å›¾åƒ')
